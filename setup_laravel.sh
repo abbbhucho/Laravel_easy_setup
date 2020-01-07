@@ -19,7 +19,9 @@ echo ' . '
 echo ''
 echo ''
 # Test if PHP is installed
-echo '============Test if php/hhvm is installed================'
+GREEN='\033[0;32m'
+NC='\033[0m'
+echo -e "${GREEN}============Test if php/hhvm is installed================ ${NC}"
 echo ''
 php -v > /dev/null 2>&1
 PHP_IS_INSTALLED=$?
@@ -36,7 +38,9 @@ else
 fi
 # Test if Composer is installed
 echo ''
-echo '============ Checking Composer ====================='
+GREEN='\033[0;32m'
+NC='\033[0m'
+echo -e "${GREEN}============ Checking Composer =====================${NC}"
 echo ''
 
 composer -V > /dev/null 2>&1
@@ -67,7 +71,8 @@ if [[ $COMPOSER_IS_INSTALLED -ne 0 ]]; then
     else
 		#install composer
 		echo ''
-		echo ">>> Downloading and Verifying Composer"
+		GREEN='\033[0;32m'
+		echo -e "${GREEN}>>> Downloading and Verifying Composer ${NC}"
 		echo ''
 		echo " ====	Checking wget ==== "
 		echo ''
@@ -87,13 +92,15 @@ if [[ $COMPOSER_IS_INSTALLED -ne 0 ]]; then
 		HASH="$(wget -q -O - https://composer.github.io/installer.sig)"
 		php -r "if (hash_file('SHA384', 'composer-setup.php') === '$HASH') { echo 'Installer Verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 		echo ''
-		echo ">>> Installing Composer"
+		GREEN='\033[0;32m'
+		echo -e "${GREEN}>>> Installing Composer${NC}"
 		echo ''
 		sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 		rm composer-setup.php
 	fi
 else
-    echo ">>> Updating Composer"
+	GREEN='\033[0;32m'
+    echo -e "${GREEN}>>> Updating Composer ${NC}"
 
     if [[ $HHVM_IS_INSTALLED -eq 0 ]]; then
         sudo hhvm -v ResourceLimit.SocketDefaultTimeout=30 -v Http.SlowQueryThreshold=30000 -v Eval.Jit=false /usr/local/bin/composer self-update
@@ -104,7 +111,8 @@ fi
 # After successful installation of composer
 composer -V
 echo ''
-echo '>>> Checking for apache/nginx server'
+GREEN='\033[0;32m'
+echo -e "${GREEN}>>> Checking for apache/nginx server ${NC}"
 echo ''
 # Test if Apache or Nginx is installed
 nginx -v > /dev/null 2>&1
@@ -139,7 +147,8 @@ else
 fi	
 #----------------------------------------------------------------------------------------------------------------------------------
 echo ''
-echo '>>> Installing Laravel'
+GREEN='\033[0;32m'
+echo -e "${GREEN}>>> Installing Laravel$ ${NC}"
 echo ''
 echo 'Enter the name of the Laravel project'
 read project
@@ -168,18 +177,79 @@ else
     laravel_root_folder="$project"
 fi
 echo "laravel root folder : $PWD/$laravel_root_folder"
+echo ''
 laravel_public_folder="$laravel_root_folder/public"
+echo ''
+while true; do
+read -p 'Do you want to make laravel project in apache /var/www/html directory(press y or n and then [ENTER])? ' yn
+case $yn in 
+	[Yy]* ) 
+		function dir(){
+			cd ~
+			DIR="/var/www/html"
+			cd $DIR
+			cd $PWD
+			if [ -d "$DIR" ]; then
+				# Take action if $DIR exists. #
+				echo "Installing config files in ${DIR}..."
+				while true; do
+				read -p "Do you have any particular version of laravel in mind(eg: 5.8.*)?" yn
+				case $yn in
+					[Yy]* ) echo -n "Provide the version"
+							read; 
+							RED='\033[1;31m'
+							NC='\033[0m'
+							echo -e "${RED} Please wait while laravel is set up ...${NC}"
+							composer create-project laravel/laravel="${REPLY}" $laravel_root_folder
+							echo ''
+							echo '>>> Setting up file permissions ...'
+							echo ''
+							sudo chgrp -R www-data $DIR/$laravel_root_folder
+							sudo chmod -R 775 $DIR/$laravel_root_folder/storage
+							break;;
+					[Nn]* ) 
+							RED='\033[1;31m'
+							NC='\033[0m'
+							echo -e "${RED} Please wait while laravel is set up ... ${NC}" 
+							composer create-project --prefer-dist laravel/laravel $laravel_root_folder
+							echo ''
+							echo '>>> Setting up file permissions ...'
+							echo ''
+							sudo chgrp -R www-data $DIR/$laravel_root_folder
+							sudo chmod -R 775 $DIR/$laravel_root_folder/storage
+							
+								exit 0;;
+						* ) echo "Please answer yes or no.";;
+				esac
+				done	
+			else echo "The directory doesn't exist" && break;	
+			fi
+		}
+		dir 
+		exit;;
+		
+	[Nn]* )		break;;		
+	* ) echo "Please answer yes or no.";;
+    esac
+done
 # Create Laravel
-	#echo 'have any particular version of laravel in mind'
-	#read version
+
 	while true; do
     read -p "Do you have any particular version of laravel in mind(eg: 5.8.*)?" yn
     case $yn in
         [Yy]* ) echo -n "Provide the version"
 				read; 
+				RED='\033[1;31m'
+				NC='\033[0m'
+				echo -e "${RED} Please wait while laravel is set up ... ${NC}"
 				composer create-project laravel/laravel="${REPLY}" $laravel_root_folder
 				break;;
-        [Nn]* ) composer create-project --prefer-dist laravel/laravel $laravel_root_folder;;
+        [Nn]* ) 
+				RED='\033[1;31m'
+				NC='\033[0m'
+				echo -e "${RED} Please wait while laravel is set up ... ${NC}"
+				composer create-project --prefer-dist laravel/laravel $laravel_root_folder
+				exit 0;;
         * ) echo "Please answer yes or no.";;
     esac
 done
