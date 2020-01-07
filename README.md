@@ -13,8 +13,16 @@ Laravel Easy Setup is designed in such a way that it makes the life easier to se
  	```
 	bash setup_laravel.sh 	
 	```   	
+### Installation
+
+ - Debian Based Linux Distribution(eg. Ubuntu, Debian 7 or above. etc.)
+
+## Errors and bugs
+
+If something is not behaving intuitively, it is a bug and should be reported.
+Report it here by creating an issue: [Bugs.](https://github.com/datamade/your-repo-here/issues)
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details 
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details
       
