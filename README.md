@@ -20,7 +20,7 @@ Laravel Easy Setup is designed in such a way that it makes the life easier to se
 ## Errors and bugs
 
 If something is not behaving intuitively, it is a bug and should be reported.
-Report it here by creating an issue: [Bugs.](https://github.com/datamade/your-repo-here/issues)
+Report it here by creating an issue: [Bugs.](https://github.com/abbbhucho/Laravel_easy_setup/issues)
 
 ## License
 
