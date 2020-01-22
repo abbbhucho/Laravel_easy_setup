@@ -13,6 +13,8 @@ Laravel Easy Setup is designed in such a way that it makes the life easier to se
  	```
 	bash setup_laravel.sh 	
 	```   	
+   After installation use ```php artisan serve``` or ```php artisan serve --port=ENTER_YOUR_PORT```	
+
 ### Installation
 
  - Debian Based Linux Distribution(eg. Ubuntu, Debian 7 or above. etc.)
